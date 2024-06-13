@@ -1,7 +1,7 @@
-package org.example.market.domain;
+package org.example.market.domain.dto;
 
 import lombok.Data;
-import lombok.Value;
+import org.example.market.domain.Member;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
  * DTO for {@link Member}
  */
 @Data
-public class MemberDto implements Serializable {
+public class RegisterRequest implements Serializable {
     private String username;
     private String password;
 
