@@ -18,6 +18,14 @@ public class Member {
     private String password;
     private String role; // ROLE_USER, ROLE_ADMIN 등
 
+
+    public Member(Long id, String username, String password, String role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
     @Builder
     public Member(String username, String password, String role) {
         this.username = username;

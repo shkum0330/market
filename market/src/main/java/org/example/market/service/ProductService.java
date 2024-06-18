@@ -3,6 +3,7 @@ package org.example.market.service;
 import lombok.RequiredArgsConstructor;
 import org.example.market.domain.Member;
 import org.example.market.domain.Product;
+import org.example.market.domain.dto.ProductRegisterRequest;
 import org.example.market.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public List<Product> findByStatus(String status) {
+    public List<Product> findByStatus(Product.ProductStatus status) {
         return productRepository.findByStatus(status);
     }
 

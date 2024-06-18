@@ -1,6 +1,7 @@
 package org.example.market.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.market.domain.dto.AuthenticationRequest;
 import org.example.market.domain.dto.AuthenticationResponse;
 import org.example.market.domain.dto.RegisterRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -32,6 +34,7 @@ public class MemberController {
         );
 
         final UserDetails userDetails = memberService.loadUserByUsername(authenticationRequest.getUsername());
+
         final String jwt = jwtUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
