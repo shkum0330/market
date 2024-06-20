@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/product")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -26,7 +26,7 @@ public class ProductController {
     private final MemberService memberService;
 
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<?> addProduct(@RequestBody ProductRegisterRequest productRegisterRequest, @AuthenticationPrincipal UserDetails userDetails) {
         Member member = memberService.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
         productRegisterRequest.setSeller(member);
@@ -34,7 +34,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.save(productRegisterRequest.toEntity()));
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok(productService.findAll());
     }
@@ -51,7 +51,6 @@ public class ProductController {
         Product product = productService.findById(id).orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
         Member buyer = memberService.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
         if ("판매중".equals(product.getStatus().getDescription())) {
-;
             product.setReserved(buyer, Product.ProductStatus.RESERVED);
             return ResponseEntity.ok(productService.save(product));
         }
