@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -32,7 +33,7 @@ class ProductServiceTest {
     private ProductRepository productRepository;
     @MockBean
     private MemberRepository memberRepository;
-    @InjectMocks
+    @Autowired
     private ProductService productService;
 
     private Product product1,product2;
@@ -65,6 +66,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("모든 제품 검색")
     void findAllProducts() {
         List<Product> products = List.of(product1);
         when(productRepository.findAll()).thenReturn(products);
@@ -77,6 +79,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("id로 제품 검색")
     void findProductById() {
         when(productRepository.findById(1L)).thenReturn(Optional.of(product1));
 
@@ -87,6 +90,7 @@ class ProductServiceTest {
         verify(productRepository, times(1)).findById(1L);
     }
     @Test
+    @DisplayName("상태로 제품 검색")
     void testFindProductsByStatus() {
         List<Product> products = List.of(product1);
         when(productRepository.findByStatus(Product.ProductStatus.FOR_SALE)).thenReturn(products);
@@ -99,6 +103,7 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("판매자로 제품 검색")
     void testFindProductsBySeller() {
         List<Product> products = List.of(product1);
         when(productRepository.findBySeller(seller)).thenReturn(products);
@@ -110,6 +115,7 @@ class ProductServiceTest {
         verify(productRepository, times(1)).findBySeller(seller);
     }
     @Test
+    @DisplayName("구매 성공")
     public void testBuyProductSuccess() {
         when(memberRepository.findById(buyer.getId())).thenReturn(Optional.of(buyer));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product1));
