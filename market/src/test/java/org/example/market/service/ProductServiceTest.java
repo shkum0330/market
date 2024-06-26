@@ -2,14 +2,20 @@ package org.example.market.service;
 
 import org.example.market.domain.Member;
 import org.example.market.domain.Product;
+import org.example.market.domain.dto.BuyProductRequest;
+import org.example.market.repository.MemberRepository;
 import org.example.market.repository.ProductRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,8 +28,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
 class ProductServiceTest {
-    @Mock
+    @MockBean
     private ProductRepository productRepository;
+    @MockBean
+    private MemberRepository memberRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -33,20 +41,26 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         seller = new Member(1L,"seller","1234","ROLE_USER");
         buyer = new Member(2L,"buyer","1234","ROLE_USER");
 
         product1 = new Product(1L,"Test Product1",10000L, Product.ProductStatus.FOR_SALE,seller,null);
-        product1 = new Product(1L,"Test Product2",20000L, Product.ProductStatus.RESERVED,seller,buyer);
+        product2 = new Product(2L,"Test Product2",20000L, Product.ProductStatus.RESERVED,seller,buyer);
     }
     @Test
+    @DisplayName("제품 판매 등록")
     void addProduct() {
-        when(productRepository.save(any(Product.class))).thenReturn(product1);
+        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Product savedProduct = productService.save(product1);
 
         assertNotNull(savedProduct);
         assertEquals(product1.getName(), savedProduct.getName());
+        assertEquals(product1.getPrice(), savedProduct.getPrice());
+        assertEquals(product1.getStatus(), savedProduct.getStatus());
+        assertEquals(product1.getSeller(), savedProduct.getSeller());
+
         verify(productRepository, times(1)).save(product1);
     }
 
@@ -94,6 +108,17 @@ class ProductServiceTest {
         assertNotNull(foundProducts);
         assertEquals(1, foundProducts.size());
         verify(productRepository, times(1)).findBySeller(seller);
+    }
+    @Test
+    public void testBuyProductSuccess() {
+        when(memberRepository.findById(buyer.getId())).thenReturn(Optional.of(buyer));
+        when(productRepository.findById(1L)).thenReturn(Optional.of(product1));
+        when(productRepository.save(any(Product.class))).thenReturn(product1);
+
+        BuyProductRequest buyProductRequest = new BuyProductRequest();
+        buyProductRequest.setPrice(10000L);
+
+        assertDoesNotThrow(() -> productService.buyProduct(1L, buyer, buyProductRequest.getPrice()));
     }
 
 }

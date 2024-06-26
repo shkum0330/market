@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static org.example.market.domain.Product.ProductStatus.*;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -59,8 +61,12 @@ public class Product {
         this.seller = seller;
     }
 
-    public void setReserved(Member buyer,ProductStatus status){
+    public void setReserved(Member buyer){
         this.buyer=buyer;
-        this.status=status;
+        this.status= SOLD_OUT;
+    }
+
+    public void saleApproved(){
+        this.status= SOLD_OUT;
     }
 }

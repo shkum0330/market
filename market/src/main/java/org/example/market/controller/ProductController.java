@@ -3,8 +3,10 @@ package org.example.market.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.market.domain.Member;
 import org.example.market.domain.Product;
+import org.example.market.domain.dto.BuyProductRequest;
 import org.example.market.domain.dto.ProductRegisterRequest;
 import org.example.market.exception.ProductNotFoundException;
+import org.example.market.exception.UnauthorizedException;
 import org.example.market.service.MemberService;
 import org.example.market.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,9 @@ public class ProductController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(@RequestBody ProductRegisterRequest productRegisterRequest, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
         Member member = memberService.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
         productRegisterRequest.setSeller(member);
         productRegisterRequest.setStatus(Product.ProductStatus.FOR_SALE);
@@ -47,20 +52,24 @@ public class ProductController {
     }
 
     @PostMapping("/{id}/buy")
-    public ResponseEntity<?> buyProduct(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> buyProduct(@PathVariable Long id, @RequestBody BuyProductRequest buyProductRequest, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
         Product product = productService.findById(id).orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
         Member buyer = memberService.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
-        if ("판매중".equals(product.getStatus().getDescription())) {
-            product.setReserved(buyer, Product.ProductStatus.RESERVED);
-            return ResponseEntity.ok(productService.save(product));
-        }
+        productService.buyProduct(id,buyer,buyProductRequest.getPrice());
         return ResponseEntity.status(HttpStatus.CONFLICT).body("구매할 수 없는 제품입니다.");
     }
 
     @PostMapping("/{id}/approve")
     public ResponseEntity<?> approveSale(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
-        Product product = productService.findById(id).orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
+        if (userDetails == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
         Member seller = memberService.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("판매를 승인할 수 없습니다.");
+        Product product = productService.approveSale(id,seller);
+
+        return ResponseEntity.ok(product);
     }
 }
