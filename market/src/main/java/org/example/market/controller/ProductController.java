@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.market.domain.Member;
 import org.example.market.domain.Product;
 import org.example.market.domain.dto.BuyProductRequest;
+import org.example.market.domain.dto.ProductDetailResponse;
 import org.example.market.domain.dto.ProductRegisterRequest;
 import org.example.market.exception.ProductNotFoundException;
 import org.example.market.exception.UnauthorizedException;
@@ -28,7 +29,7 @@ public class ProductController {
     private final MemberService memberService;
 
 
-    @PostMapping("/add")
+    @PostMapping("/add") // 제품 등록
     public ResponseEntity<?> addProduct(@RequestBody ProductRegisterRequest productRegisterRequest, @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
             throw new UnauthorizedException("로그인이 필요합니다.");
@@ -45,9 +46,9 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductDetailResponse> getProductById(@PathVariable Long id) {
         return productService.findById(id)
-                .map(ResponseEntity::ok)
+                .map(product -> ResponseEntity.ok(new ProductDetailResponse(product)))
                 .orElse(ResponseEntity.notFound().build());
     }
 

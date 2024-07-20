@@ -44,6 +44,7 @@ public class Product {
     @JoinColumn(name="buyer_id")
     private Member buyer;
 
+    @Builder
     public Product(Long id, String name, Long price, ProductStatus status, Member seller, Member buyer) {
         this.id = id;
         this.name = name;
@@ -55,6 +56,15 @@ public class Product {
 
     @Builder
     public Product(String name, Long price, ProductStatus status, Member seller) {
+        this.name = name;
+        this.price = price;
+        this.status = status;
+        this.seller = seller;
+    }
+
+    @Builder
+    public Product(Long id, String name, Long price, ProductStatus status, Member seller) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.status = status;
