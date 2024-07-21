@@ -42,7 +42,7 @@ public class ProductControllerTest {
     @BeforeEach
     void setUp() {
         seller = new Member(1L, "seller", "1234", "ROLE_USER");
-        product = new Product(1L, "Test Product", 10000L, Product.ProductStatus.FOR_SALE, seller, null);
+        product = new Product(1L, "Test Product", 10000L, Product.ProductStatus.FOR_SALE, seller,100);
     }
 
     @Test
@@ -56,7 +56,8 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.price").value(10000L))
                 .andExpect(jsonPath("$.status").value("FOR_SALE"))
                 .andExpect(jsonPath("$.sellerId").value(1L))
-                .andExpect(jsonPath("$.sellerName").value("seller"));
+                .andExpect(jsonPath("$.sellerName").value("seller"))
+                .andExpect(jsonPath("$.quantity").value(100));
     }
 
     @Test

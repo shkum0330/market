@@ -40,30 +40,20 @@ public class Product {
     @JoinColumn(name="seller_id")
     private Member seller;
 
-    @ManyToOne
-    @JoinColumn(name="buyer_id")
-    private Member buyer;
+    @Column(nullable = false)
+    private int stock;
 
     @Builder
-    public Product(Long id, String name, Long price, ProductStatus status, Member seller, Member buyer) {
-        this.id = id;
+    public Product(String name, Long price, ProductStatus status, Member seller,int stock) {
         this.name = name;
         this.price = price;
         this.status = status;
         this.seller = seller;
-        this.buyer = buyer;
+        this.stock = stock;
     }
 
     @Builder
-    public Product(String name, Long price, ProductStatus status, Member seller) {
-        this.name = name;
-        this.price = price;
-        this.status = status;
-        this.seller = seller;
-    }
-
-    @Builder
-    public Product(Long id, String name, Long price, ProductStatus status, Member seller) {
+    public Product(Long id, String name, Long price, ProductStatus status, Member seller,int stock) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -71,10 +61,6 @@ public class Product {
         this.seller = seller;
     }
 
-    public void setReserved(Member buyer){
-        this.buyer=buyer;
-        this.status= SOLD_OUT;
-    }
 
     public void saleApproved(){
         this.status= SOLD_OUT;

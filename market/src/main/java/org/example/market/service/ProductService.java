@@ -4,22 +4,29 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.market.domain.Member;
 import org.example.market.domain.Product;
+import org.example.market.domain.Transaction;
 import org.example.market.domain.dto.ProductRegisterRequest;
 import org.example.market.exception.ProductNotFoundException;
 import org.example.market.exception.UnauthorizedException;
 import org.example.market.repository.ProductRepository;
+import org.example.market.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly=true)
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final TransactionRepository transactionRepository;
 
+    @Transactional
     public Product save(Product product) {
         log.info("제품 등록 = {}",product);
         return productRepository.save(product);
@@ -41,11 +48,8 @@ public class ProductService {
         return productRepository.findBySeller(seller);
     }
 
-    public List<Product> findByBuyer(Member buyer) {
-        return productRepository.findByBuyer(buyer);
-    }
-
-    public void buyProduct(Long productId, Member buyer, double offeredPrice) {
+    @Transactional
+    public void buyProduct(Long productId, Member buyer, Long price,Long quantity) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("존재하지 않는 제품입니다."));
 
@@ -57,14 +61,14 @@ public class ProductService {
             throw new IllegalStateException("구매할 수 없는 상태입니다.");
         }
 
-        if (product.getPrice() != offeredPrice) {
+        if (!Objects.equals(product.getPrice()*quantity, price*quantity)) {
             throw new IllegalArgumentException("제시한 가격이 일치하지 않습니다.");
         }
 
-        product.setReserved(buyer);
-
+        transactionRepository.save(new Transaction(product, buyer, Transaction.TransactionStatus.RESERVED,quantity,price*quantity));
     }
 
+    @Transactional
     public Product approveSale(Long productId, Member seller) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));

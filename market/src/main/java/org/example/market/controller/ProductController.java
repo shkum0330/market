@@ -6,6 +6,7 @@ import org.example.market.domain.Product;
 import org.example.market.domain.dto.BuyProductRequest;
 import org.example.market.domain.dto.ProductDetailResponse;
 import org.example.market.domain.dto.ProductRegisterRequest;
+import org.example.market.exception.InsufficientStockException;
 import org.example.market.exception.ProductNotFoundException;
 import org.example.market.exception.UnauthorizedException;
 import org.example.market.service.MemberService;
@@ -46,10 +47,21 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDetailResponse> getProductById(@PathVariable Long id) {
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
         return productService.findById(id)
                 .map(product -> ResponseEntity.ok(new ProductDetailResponse(product)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{id}/reserve")
+    public ResponseEntity<?> reserveProduct(@PathVariable Long id, @RequestBody ProductRegisterRequest productRegisterRequest, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new UnauthorizedException("로그인이 필요합니다.");
+        }
+        productService.findById(id).orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
+        Member buyer = memberService.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("구매할 수 없는 제품입니다.");
     }
 
     @PostMapping("/{id}/buy")
@@ -57,9 +69,12 @@ public class ProductController {
         if (userDetails == null) {
             throw new UnauthorizedException("로그인이 필요합니다.");
         }
-        Product product = productService.findById(id).orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
+        Product product=productService.findById(id).orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
+        if(product.getStock()< buyProductRequest.getQuantity()){
+            throw new InsufficientStockException("재고가 부족합니다");
+        }
         Member buyer = memberService.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
-        productService.buyProduct(id,buyer,buyProductRequest.getPrice());
+        productService.buyProduct(id,buyer,buyProductRequest.getPrice(), buyProductRequest.getQuantity());
         return ResponseEntity.status(HttpStatus.CONFLICT).body("구매할 수 없는 제품입니다.");
     }
 
