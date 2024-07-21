@@ -1,5 +1,6 @@
 package org.example.market.controller;
 
+import org.example.market.config.SecurityConfig;
 import org.example.market.domain.Member;
 import org.example.market.domain.Product;
 import org.example.market.jwt.JwtUtil;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductController.class)
+@Import(SecurityConfig.class)
 public class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -52,8 +55,8 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.name").value("Test Product"))
                 .andExpect(jsonPath("$.price").value(10000L))
                 .andExpect(jsonPath("$.status").value("FOR_SALE"))
-                .andExpect(jsonPath("$.seller.id").value(1L))
-                .andExpect(jsonPath("$.seller.username").value("seller"));
+                .andExpect(jsonPath("$.sellerId").value(1L))
+                .andExpect(jsonPath("$.sellerName").value("seller"));
     }
 
     @Test
