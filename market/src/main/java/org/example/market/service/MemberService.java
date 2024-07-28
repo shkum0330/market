@@ -20,7 +20,7 @@ public class MemberService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     public Member save(RegisterRequest registerRequest) {
-        return memberRepository.save(registerRequest.toEntity("ROLE_USER"));
+        return memberRepository.save(registerRequest.toEntity());
     }
 
     public Optional<Member> findByUsername(String username) {

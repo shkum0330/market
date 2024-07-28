@@ -5,6 +5,8 @@ import org.example.market.domain.Member;
 
 import java.io.Serializable;
 
+import static org.example.market.domain.Member.*;
+
 /**
  * DTO for {@link Member}
  */
@@ -12,8 +14,9 @@ import java.io.Serializable;
 public class RegisterRequest implements Serializable {
     private String username;
     private String password;
+    private Role role;
 
-    public Member toEntity(String role){
-        return Member.builder().username(username).password(password).role(role).build();
+    public Member toEntity(){
+        return builder().username(username).password(password).role(role).build();
     }
 }

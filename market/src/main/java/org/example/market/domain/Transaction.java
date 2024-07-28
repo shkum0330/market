@@ -10,6 +10,7 @@ import static org.example.market.domain.Transaction.TransactionStatus.RESERVED;
 
 
 @Entity
+@Table(name = "TRANSACTIONS")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Transaction extends BaseTimeEntity{

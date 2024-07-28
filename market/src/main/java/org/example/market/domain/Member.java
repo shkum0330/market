@@ -16,10 +16,24 @@ public class Member {
     private Long id;
     private String username;
     private String password;
-    private String role; // ROLE_USER, ROLE_ADMIN 등
 
+    @Enumerated(EnumType.STRING)
+    private Role role; // ROLE_USER, ROLE_ADMIN 등
 
-    public Member(Long id, String username, String password, String role) {
+    @Getter
+    public enum Role {
+        ADMIN("ROLE_ADMIN"),
+        SELLER("ROLE_SELLER"),
+        BUYER("ROLE_BUYER");
+
+        private final String description;
+
+        Role(String description) {
+            this.description = description;
+        }
+    }
+
+    public Member(Long id, String username, String password,Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -27,7 +41,7 @@ public class Member {
     }
 
     @Builder
-    public Member(String username, String password, String role) {
+    public Member(String username, String password, Role role) {
         this.username = username;
         this.password = password;
         this.role = role;

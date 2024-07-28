@@ -41,7 +41,7 @@ public class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        seller = new Member(1L, "seller", "1234", "ROLE_USER");
+        seller = new Member(1L, "seller", "1234", Member.Role.SELLER);
         product = new Product(1L, "Test Product", 10000L, Product.ProductStatus.FOR_SALE, seller,100);
     }
 

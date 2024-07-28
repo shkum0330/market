@@ -13,10 +13,13 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         # show_sql: true
         format_sql: true
         default_batch_fetch_size: 1000
   #    open-in-view: false
+
 
 logging:
   level:

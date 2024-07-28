@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import static org.example.market.domain.Product.ProductStatus.*;
 
@@ -33,7 +34,6 @@ public class Product {
         ProductStatus(String description) {
             this.description = description;
         }
-
     }
 
     @ManyToOne
@@ -41,6 +41,7 @@ public class Product {
     private Member seller;
 
     @Column(nullable = false)
+    @ColumnDefault("0")
     private int stock;
 
     @Builder

@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.List;
 import java.util.Optional;
 
+import static org.example.market.domain.Member.Role.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -38,8 +39,8 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        seller = new Member(1L,"seller","1234","ROLE_USER");
-        buyer = new Member(2L,"buyer","1234","ROLE_USER");
+        seller = new Member(1L,"seller","1234", SELLER);
+        buyer = new Member(2L,"buyer","1234", BUYER);
 
         product1 = new Product(1L,"Test Product1",10000L, Product.ProductStatus.FOR_SALE,seller,100);
         product2 = new Product(2L,"Test Product2",20000L, Product.ProductStatus.RESERVED,seller,1);
