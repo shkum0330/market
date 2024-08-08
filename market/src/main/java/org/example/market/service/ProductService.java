@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.market.domain.Member;
 import org.example.market.domain.Product;
 import org.example.market.domain.Transaction;
-import org.example.market.domain.dto.ProductRegisterRequest;
 import org.example.market.exception.ProductNotFoundException;
 import org.example.market.exception.UnauthorizedException;
 import org.example.market.repository.ProductRepository;
@@ -49,7 +48,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void buyProduct(Long productId, Member buyer, Long price,Long quantity) {
+    public void reserveProduct(Long productId, Member buyer, Long price, Long quantity) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("존재하지 않는 제품입니다."));
 
@@ -69,8 +68,8 @@ public class ProductService {
     }
 
     @Transactional
-    public Product approveSale(Long productId, Member seller) {
-        Product product = productRepository.findById(productId)
+    public void approveSale(Transaction transaction, Member seller) {
+        Product product = productRepository.findById(transaction.getProduct().getId())
                 .orElseThrow(() -> new ProductNotFoundException("존재하지 않는 상품입니다."));
 
         if (!product.getSeller().equals(seller)) {
@@ -81,7 +80,8 @@ public class ProductService {
             throw new IllegalStateException("판매를 승인할 수 없는 상태입니다.");
         }
 
-        product.saleApproved();
-        return productRepository.save(product);
+        if(transaction.getQuantity() == product.getStock()) product.soldOut();
+
+        transaction.setCompleted();
     }
 }

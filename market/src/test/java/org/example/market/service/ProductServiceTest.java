@@ -2,18 +2,16 @@ package org.example.market.service;
 
 import org.example.market.domain.Member;
 import org.example.market.domain.Product;
-import org.example.market.domain.dto.BuyProductRequest;
 import org.example.market.repository.MemberRepository;
 import org.example.market.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@Transactional
 class ProductServiceTest {
     @MockBean
     private ProductRepository productRepository;
@@ -109,6 +108,12 @@ class ProductServiceTest {
         assertNotNull(foundProducts);
         assertEquals(1, foundProducts.size());
         verify(productRepository, times(1)).findBySeller(seller);
+    }
+
+    @Test
+    @DisplayName("제품 예약하기")
+    void reserveProduct() {
+
     }
 //    @Test
 //    @DisplayName("구매 성공")

@@ -60,10 +60,11 @@ public class Product {
         this.price = price;
         this.status = status;
         this.seller = seller;
+        this.stock=stock;
     }
 
 
-    public void saleApproved(){
+    public void soldOut(){
         this.status= SOLD_OUT;
     }
 }

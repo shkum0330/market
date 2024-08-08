@@ -1,8 +1,8 @@
 package org.example.market.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.market.controller.dto.RegisterRequest;
 import org.example.market.domain.Member;
-import org.example.market.domain.dto.RegisterRequest;
 import org.example.market.repository.MemberRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

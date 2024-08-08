@@ -4,6 +4,7 @@ import org.example.market.config.SecurityConfig;
 import org.example.market.domain.Member;
 import org.example.market.domain.Product;
 import org.example.market.jwt.JwtUtil;
+import org.example.market.repository.TransactionRepository;
 import org.example.market.service.MemberService;
 import org.example.market.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +35,8 @@ public class ProductControllerTest {
     @MockBean
     private MemberService memberService;
     @MockBean
+    private TransactionRepository transactionRepository;
+    @MockBean
     private JwtUtil jwtUtil;
 
     private Product product;
@@ -57,7 +60,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.status").value("FOR_SALE"))
                 .andExpect(jsonPath("$.sellerId").value(1L))
                 .andExpect(jsonPath("$.sellerName").value("seller"))
-                .andExpect(jsonPath("$.quantity").value(100));
+                .andExpect(jsonPath("$.stock").value(100));
     }
 
     @Test

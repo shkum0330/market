@@ -1,10 +1,8 @@
-package org.example.market.domain.dto;
+package org.example.market.controller.dto;
 
 import lombok.Data;
 import org.example.market.domain.Member;
 import org.example.market.domain.Product;
-
-import static org.example.market.domain.Product.ProductStatus.FOR_SALE;
 
 @Data
 public class ProductRegisterRequest {

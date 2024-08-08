@@ -1,4 +1,4 @@
-package org.example.market.domain.dto;
+package org.example.market.controller.dto;
 
 import lombok.Data;
 

@@ -1,8 +1,6 @@
-package org.example.market.domain.dto;
+package org.example.market.controller.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.example.market.domain.Member;
 import org.example.market.domain.Product;
 
 @Data
@@ -13,6 +11,7 @@ public class ProductDetailResponse {
     private Long sellerId;
     private String sellerName;
     private Product.ProductStatus status;
+    private int stock;
 
     public ProductDetailResponse(Product product) {
         this.id = product.getId();
@@ -21,6 +20,7 @@ public class ProductDetailResponse {
         this.sellerId = product.getSeller().getId();
         this.sellerName=product.getSeller().getUsername();
         this.status = product.getStatus();
+        this.stock = product.getStock();
     }
 
 }

@@ -2,9 +2,9 @@ package org.example.market.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.market.domain.dto.AuthenticationRequest;
-import org.example.market.domain.dto.AuthenticationResponse;
-import org.example.market.domain.dto.RegisterRequest;
+import org.example.market.controller.dto.AuthenticationRequest;
+import org.example.market.controller.dto.AuthenticationResponse;
+import org.example.market.controller.dto.RegisterRequest;
 import org.example.market.jwt.JwtUtil;
 import org.example.market.service.MemberService;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +27,12 @@ public class MemberController {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
+        registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        return ResponseEntity.ok(memberService.save(registerRequest));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         authenticationManager.authenticate(
@@ -38,11 +44,5 @@ public class MemberController {
         final String jwt = jwtUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
-        registerRequest.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        return ResponseEntity.ok(memberService.save(registerRequest));
     }
 }

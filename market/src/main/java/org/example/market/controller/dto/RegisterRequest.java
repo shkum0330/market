@@ -1,11 +1,11 @@
-package org.example.market.domain.dto;
+package org.example.market.controller.dto;
 
 import lombok.Data;
 import org.example.market.domain.Member;
 
 import java.io.Serializable;
 
-import static org.example.market.domain.Member.*;
+import static org.example.market.domain.Member.Role;
 
 /**
  * DTO for {@link Member}
@@ -17,6 +17,6 @@ public class RegisterRequest implements Serializable {
     private Role role;
 
     public Member toEntity(){
-        return builder().username(username).password(password).role(role).build();
+        return Member.builder().username(username).password(password).role(role).build();
     }
 }
